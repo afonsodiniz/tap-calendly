@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "tap-calendly"
+version = "0.0.1"
+description = "`tap-calendly` is a Singer tap for Calendly, built with the Meltano Singer SDK."
+readme = "README.md"
+authors = ["Afonso Diniz <afonso@rauva.com>"]
+keywords = [
+    "ELT",
+    "Calendly",
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+importlib-resources = { version = "==6.4.*", python = "<3.9" }
+singer-sdk = { version="~=0.38.0", extras = [] }
+fs-s3fs = { version = "~=1.1.1", optional = true }
+requests = "~=2.32.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.0"
+singer-sdk = { version="~=0.38.0", extras = ["testing"] }
+
+[tool.poetry.extras]
+s3 = ["fs-s3fs"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+
+[tool.ruff]
+src = ["tap_calendly"]
+target-version = "py38"
+
+[tool.ruff.lint]
+ignore = [
+    "ANN101",  # missing-type-self
+    "ANN102",  # missing-type-cls
+    "COM812",  # missing-trailing-comma
+    "ISC001",  # single-line-implicit-string-concatenation
+]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["tap_calendly"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[build-system]
+requires = ["poetry-core==1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# CLI declaration
+tap-calendly = 'tap_calendly.tap:TapCalendly.cli'
