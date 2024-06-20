@@ -74,13 +74,13 @@
       "type": "object",
       "properties": {
         "active": {
-          "type": "string"
+          "type": "integer"
         },
         "limit": {
-          "type": "string"
+          "type": "integer"
         },
         "total": {
-          "type": "string"
+          "type": "integer"
         }
       },
       "required": [
