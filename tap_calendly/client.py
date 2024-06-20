@@ -8,13 +8,18 @@ from typing import Any, Callable, Iterable
 import requests
 from singer_sdk.authenticators import BearerTokenAuthenticator
 from singer_sdk.helpers.jsonpath import extract_jsonpath
-from singer_sdk.pagination import BaseAPIPaginator  # noqa: TCH002
+from singer_sdk.pagination import BaseAPIPaginator, JSONPathPaginator
 from singer_sdk.streams import RESTStream
 
 if sys.version_info >= (3, 9):
     import importlib.resources as importlib_resources
 else:
     import importlib_resources
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
@@ -23,7 +28,7 @@ SCHEMAS_DIR = importlib_resources.files(__package__) / "schemas"
 class CalendlyStream(RESTStream):
 
     records_jsonpath = "$.collection[*]"
-    next_page_token_jsonpath = "$.next_page"
+    next_page_token_jsonpath = "$.pagination.next_page"  
 
     @property
     def url_base(self) -> str:
@@ -51,10 +56,12 @@ class CalendlyStream(RESTStream):
 
 
     def get_new_paginator(self) -> BaseAPIPaginator:
-        return super().get_new_paginator()
+        """Create a new pagination helper instance."""
+
+        return JSONPathPaginator(self.next_page_token_jsonpath)
 
 
-    def get_url_params( self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
+    def get_url_params(self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization. """
         
         params = super().get_url_params(context, next_page_token)
@@ -67,10 +74,10 @@ class CalendlyStream(RESTStream):
 
         Args:
             response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
         """
-        # TODO: Parse response body and return a set of records.
+        if response.status_code != 200:
+            logger.error(f"API call failed: {response.status_code} - {response.text}")
+            return  # You might want to raise an exception or handle this case differently depending on your use case
+        logger.info("API call successful, parsing response")
         yield from extract_jsonpath(self.records_jsonpath, input=response.json())
 
