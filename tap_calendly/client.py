@@ -28,7 +28,7 @@ SCHEMAS_DIR = importlib_resources.files(__package__) / "schemas"
 class CalendlyStream(RESTStream):
 
     records_jsonpath = "$.collection[*]"
-    next_page_token_jsonpath = "$.pagination.next_page"  
+    next_page_token_jsonpath = "$.pagination.next_page_token"  
 
     @property
     def url_base(self) -> str:
@@ -61,39 +61,14 @@ class CalendlyStream(RESTStream):
         return JSONPathPaginator(self.next_page_token_jsonpath)
 
 
-    # def get_url_params(self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
-    #     """Return a dictionary of values to be used in URL parameterization. """
-        
-    #     params = super().get_url_params(context, next_page_token)
-    #     params["organization"] = self.config.get("organization_url")
-    #     return params
-
     def get_url_params(self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
         params = {}
+
         if next_page_token:
-            params['page'] = next_page_token
+            params['page_token'] = next_page_token
+            
         params["organization"] = self.config.get("organization_url")
         return params
-
-
-    # def get_url_params(
-    #     self,
-    #     context: dict | None,
-    #     next_page_token: Any | None,
-    # ) -> dict[str, Any]:
-    #     """Return a dictionary of values to be used in URL parameterization."""
-    #     params: dict = {}
-    #     if next_page_token:
-    #         params["start"] = next_page_token.split("start=")[-1].split("&")[0]
-    #         params["items_per_page"] = 20 
-    #     # elif self.config.get("start_date"):
-    #     #     params["start"]  = self.config("start_date")
-    #     # else:
-    #     #     params["start"] = DEFAULT_START_DATE
-    #     if self.replication_key:
-    #         params["sort"] = "asc"
-    #         params["order_by"] = self.replication_key
-    #     return params
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
