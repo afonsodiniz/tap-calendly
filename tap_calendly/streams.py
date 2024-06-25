@@ -21,6 +21,6 @@ class ScheduledEvents(CalendlyStream):
 
     name = "scheduled_events"
     path = "/scheduled_events"
-    primary_keys = ["id"]
+    # primary_keys = ["id"]
 
     schema_filepath = SCHEMAS_DIR / "scheduled_events.json"  # noqa: ERA001
