@@ -109,10 +109,16 @@
       ]
     },
     "meeting_notes_html": {
-      "type": "string"
+      "type": [
+        "null",
+        "string"
+      ]
     },
     "meeting_notes_plain": {
-      "type": "string"
+      "type": [
+        "null",
+        "string"
+      ]
     },
     "name": {
       "type": "string"
