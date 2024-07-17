@@ -37,7 +37,8 @@ class TapCalendly(Tap):
         """Return a list of discovered streams."""
 
         return [
-            streams.ScheduledEvents(self)
+            streams.ScheduledEvents(self),
+            streams.Invitees(self)
         ]
 
 

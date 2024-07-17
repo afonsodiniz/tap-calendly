@@ -22,5 +22,28 @@ class ScheduledEvents(CalendlyStream):
     name = "scheduled_events"
     path = "/scheduled_events"
     primary_keys = ["uri"]
+    schema_filepath = SCHEMAS_DIR / "scheduled_events.json"
 
-    schema_filepath = SCHEMAS_DIR / "scheduled_events.json"  # noqa: ERA001
+    def get_child_context(self, record: dict, context: dict | None) -> dict:
+        context = context or {}
+
+        uri = record.get("uri", "")
+        uuid = uri.split('/')[-1]
+        
+        context["uuid"] = uuid
+
+        return super().get_child_context(record, context) 
+
+class Invitees(CalendlyStream):
+    """Stream for Invitees endpoint"""
+
+    name = "invitees"
+    path = "/scheduled_events/{uuid}/invitees"
+    primary_keys = ["uri"]
+    schema_filepath = SCHEMAS_DIR / "invitees.json"
+    
+    parent_stream_type = ScheduledEvents
+
+    def post_process(self, row: dict, context: dict) -> dict | None:
+        row["uuid"] = context["uuid"]
+        return row

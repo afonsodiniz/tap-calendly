@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "cancel_url": {
+      "type": "string"
+    },
+    "cancellation": {
+      "type": "object",
+      "properties": {
+        "canceled_by": {
+          "type": "string"
+        },
+        "canceler_type": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "reason": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "first_name": {
+      "type": ["null", "string"]
+    },
+    "invitee_scheduled_by": {
+      "type": ["null", "string"]
+    },
+    "last_name": {
+      "type": ["null", "string"]
+    },
+    "name": {
+      "type": "string"
+    },
+    "new_invitee": {
+      "type": ["null", "string"]
+    },
+    "no_show": {
+      "type": ["null", "string"]
+    },
+    "old_invitee": {
+      "type": ["null", "string"]
+    },
+    "payment": {
+      "type": ["null", "string"]
+    },
+    "questions_and_answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "question": {
+            "type": "string"
+          }
+        },
+        "required": ["answer", "position", "question"]
+      }
+    },
+    "reconfirmation": {
+      "type": ["null", "string"]
+    },
+    "reschedule_url": {
+      "type": "string"
+    },
+    "rescheduled": {
+      "type": "boolean"
+    },
+    "routing_form_submission": {
+      "type": ["null", "string"]
+    },
+    "scheduling_method": {
+      "type": ["null", "string"]
+    },
+    "status": {
+      "type": "string"
+    },
+    "text_reminder_number": {
+      "type": ["null", "string"]
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "tracking": {
+      "type": "object",
+      "properties": {
+        "utm_campaign": {
+          "type": ["null", "string"]
+        },
+        "utm_source": {
+          "type": ["null", "string"]
+        },
+        "utm_medium": {
+          "type": ["null", "string"]
+        },
+        "utm_content": {
+          "type": ["null", "string"]
+        },
+        "utm_term": {
+          "type": ["null", "string"]
+        },
+        "salesforce_uuid": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "uri": {
+      "type": "string"
+    }
+  }
+}
