@@ -22,6 +22,7 @@ class ScheduledEvents(CalendlyStream):
     name = "scheduled_events"
     path = "/scheduled_events"
     primary_keys = ["uri"]
+    replication_key = "updated_at"
     schema_filepath = SCHEMAS_DIR / "scheduled_events.json"
 
     def get_child_context(self, record: dict, context: dict | None) -> dict:
@@ -40,6 +41,7 @@ class Invitees(CalendlyStream):
     name = "invitees"
     path = "/scheduled_events/{uuid}/invitees"
     primary_keys = ["uri"]
+    replication_key = "updated_at"
     schema_filepath = SCHEMAS_DIR / "invitees.json"
     
     parent_stream_type = ScheduledEvents

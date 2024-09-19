@@ -64,6 +64,11 @@ class CalendlyStream(RESTStream):
     def get_url_params(self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
         params = {}
 
+        last_updated = self.get_starting_replication_key_value(context)
+
+        if last_updated:
+            params["start_time"] = last_updated
+
         if next_page_token:
             params['page_token'] = next_page_token
             
