@@ -10,6 +10,7 @@ from singer_sdk.authenticators import BearerTokenAuthenticator
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator, JSONPathPaginator
 from singer_sdk.streams import RESTStream
+import datetime
 
 if sys.version_info >= (3, 9):
     import importlib.resources as importlib_resources
@@ -64,11 +65,6 @@ class CalendlyStream(RESTStream):
     def get_url_params(self, context: dict | None, next_page_token: Any | None) -> dict[str, Any]:
         params = {}
 
-        last_updated = self.get_starting_replication_key_value(context)
-
-        if last_updated:
-            params["start_time"] = last_updated
-
         if next_page_token:
             params['page_token'] = next_page_token
             
@@ -87,3 +83,19 @@ class CalendlyStream(RESTStream):
         logger.info("API call successful, parsing response")
         yield from extract_jsonpath(self.records_jsonpath, input=response.json())
 
+    @staticmethod
+    def parse_datetime_with_tz(datetime_str: str) -> datetime.datetime:
+
+        if 'Z' in datetime_str:
+            datetime_str = datetime_str.replace('Z', '+0000')
+
+        return datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+
+    def post_process(self, record: dict, context: dict | None) -> dict | None:
+
+        last_updated_str = self.get_starting_replication_key_value(context)
+        logger.info(last_updated_str)
+        last_updated = self.parse_datetime_with_tz(last_updated_str) if last_updated_str else None
+        record_updated_at = self.parse_datetime_with_tz(record['updated_at'])
+
+        return record if last_updated and record_updated_at > last_updated else None
