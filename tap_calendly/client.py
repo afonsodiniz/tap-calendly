@@ -98,4 +98,4 @@ class CalendlyStream(RESTStream):
         last_updated = self.parse_datetime_with_tz(last_updated_str) if last_updated_str else None
         record_updated_at = self.parse_datetime_with_tz(record['updated_at'])
 
-        return record if last_updated and record_updated_at > last_updated else None
+        return record if (last_updated is None or record_updated_at > last_updated) else None
